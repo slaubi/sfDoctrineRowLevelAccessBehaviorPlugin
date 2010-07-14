@@ -1,0 +1,63 @@
+sfDoctrineRowLevelAccessBehavior plugin
+==============
+
+The `sfDoctrineRowLevelAccessBehavior` is a symfony plugin that adds 
+authorization on a per row basis; also known als Row Level Access or 
+Record Level Access.
+
+This plugin provides you the means to enable Row Level Access in your 
+application by maintaining just a configuration file. The rest is done
+automatically.
+
+Installation
+------------
+
+  * Install the plugin
+
+        $ symfony plugin:install sfDoctrineRowLevelAccessBehavior
+
+  * Clear your cache
+  
+        $ symfony cc
+
+  * Create a new YML file in your /config folder named `rla.yml`
+  
+Setting up Row Level Access
+---------------------------
+
+With this plugin you can create an association between a field in a model 
+and a method in your user class. The general idea behind this is that that which
+the user may view is limited by his properties.
+
+For example:
+The currently signed on user may only see the Contacts of the Customer he 
+represents. To be able to make this relation you would need a method 
+getCustomerId in the myUser class and 3 lines in the configuration file 
+rla.yml, which look like this
+           
+           $ Contact:
+           $   field: costumer_id
+           $   callback: { method: getCustomerId }
+
+What this code does is create a relation between the CUSTOMER_ID field of 
+the Contact model and that which is returned from `myUser->getCustomerId()`.
+Thus, if `getCustomerId` returns 1, only the records where CUSTOMER_ID is equal 
+to 1 are returned in the Contact model.
+
+  * `field`: name of the field in the model where the behavior supposed to check against. default is: id. Is this is not set, the behaviour checks against the id. 
+  * `callback`: What against to you want to check. Is a object with two extra options:
+   * `class`: name of the class you want to check against. Standard is a special value of SF_USER of the user object. It can be also a clas with a static method.
+   * `method`: the name of the method which returns the values for the check. If it returns NULL everything is permitted, otherwise it returns a value or an array. Except for the SF_USER this has to be static for the handed over classes ($sf_user supports non-static).
+
+
+
+Associating multiple values
+---------------------------
+Situations occur where you want to use multiple values to check against. 
+For example when the user is allowed to see the information of multiple 
+customers.
+
+This can be solved by returning an array from the User's method, thus if 
+the `getCustomerId` returns `array(1,2)` instead of `1` the user will be 
+associated with both customers.
+
