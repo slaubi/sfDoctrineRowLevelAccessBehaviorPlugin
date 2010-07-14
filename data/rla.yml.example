@@ -1,0 +1,8 @@
+Customer:
+  field: id
+  callback: { method: getCustomerId }
+
+Contact:
+  field: costumer_id
+  callback: { method: getCustomerId }
+

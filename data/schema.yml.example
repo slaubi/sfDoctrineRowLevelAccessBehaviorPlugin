@@ -1,0 +1,24 @@
+Customer:
+  field: id
+  callback: { method: getCustomerId }
+
+Contact:
+  field: costumer_id
+  callback: { method: getCustomerId }
+
+
+P1ngProject:
+  actAs:
+    Timestampable: ~
+    SoftDelete: ~
+    RowLevelAccess:
+      callback: { method: getAllowedProjects }
+
+P1ngIssue:
+  actAs:
+    Timestampable: ~
+    SoftDelete: ~
+    RowLevelAccess:
+      field: p1ng_project_id
+      callback: { method: getAllowedProjects }
+

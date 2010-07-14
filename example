@@ -1,0 +1,17 @@
+
+P1ngProject:
+  actAs:
+    Timestampable: ~
+    SoftDelete: ~
+    Signable: ~
+    RowLevelAccess:
+      callback: { method: getAllowedProjects }
+
+P1ngIssue:
+  actAs:
+    Timestampable: ~
+    SoftDelete: ~
+    Signable: ~
+    RowLevelAccess:
+      field: p1ng_project_id
+      callback: { method: getAllowedProjects }
