@@ -15,12 +15,23 @@ Installation
   * Install the plugin
 
         $ symfony plugin:install sfDoctrineRowLevelAccessBehavior
+        
+  * Enable dql_callbacks in your databases.yml
+           $ all:
+           $ doctrine:
+           $ class: sfDoctrineDatabase
+           $ param:
+           $   dsn: 'mysql:host=localhost;dbname=<DB_NAME>'
+           $   username: <DB_USER>
+           $   password: <DB_PWD>
+           $   attributes: 
+           $     use_dql_callbacks: true
 
   * Clear your cache
   
         $ symfony cc
 
-  * Create a new YML file in your /config folder named `rla.yml`
+  * Add the behaviour to your schema.yml
   
 Setting up Row Level Access
 ---------------------------
@@ -29,15 +40,16 @@ With this plugin you can create an association between a field in a model
 and a method in your user class. The general idea behind this is that that which
 the user may view is limited by his properties.
 
-For example:
+Example 1:
 The currently signed on user may only see the Contacts of the Customer he 
 represents. To be able to make this relation you would need a method 
-getCustomerId in the myUser class and 3 lines in the configuration file 
-rla.yml, which look like this
+getCustomerId in the myUser class and those lines in the schema.yml, which 
+look like this
            
            $ Contact:
-           $   field: costumer_id
-           $   callback: { method: getCustomerId }
+           $   actAs:
+           $     RowLevelAccess:
+           $       callback: { method: getCustomerId }
 
 What this code does is create a relation between the CUSTOMER_ID field of 
 the Contact model and that which is returned from `myUser->getCustomerId()`.
@@ -50,6 +62,22 @@ to 1 are returned in the Contact model.
    * `method`: the name of the method which returns the values for the check. If it returns NULL everything is permitted, otherwise it returns a value or an array. Except for the SF_USER this has to be static for the handed over classes ($sf_user supports non-static).
 
 
+Example 2:
+           $ # schema.yml
+           $ Entry:
+           $   actAs:
+           $     Timestampable: ~
+           $     RowLevelAccess:
+           $       field:    id
+           $       callback: {class: Entry, method: getFriendStatus }
+           
+           $ # lib/model/doctrine/Entry.class.php
+           $ //  returns array with possible entry-ids
+           $ static public function getFriendStatus()
+           $ {
+           $   ### get your friend-ids ...
+           $   return array($ids);
+           $ }          
 
 Associating multiple values
 ---------------------------
