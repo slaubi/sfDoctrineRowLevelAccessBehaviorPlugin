@@ -48,7 +48,7 @@ look like this
            
            $ Contact:
            $   actAs:
-           $     RowLevelAccess:
+           $     Doctrine_Template_RowLevelAccess:
            $       callback: { method: getCustomerId }
 
 What this code does is create a relation between the CUSTOMER_ID field of 
@@ -67,7 +67,7 @@ Example 2:
            $ Entry:
            $   actAs:
            $     Timestampable: ~
-           $     RowLevelAccess:
+           $     Doctrine_Template_RowLevelAccess:
            $       field:    id
            $       callback: {class: Entry, method: getFriendStatus }
            
